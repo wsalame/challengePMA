@@ -1,0 +1,35 @@
+package me.amp.challenge.model;
+
+import java.io.IOException;
+
+import com.google.inject.ImplementedBy;
+
+import me.amp.challenge.elasticsearch.ElasticsearchWriteController;
+import me.amp.challenge.elasticsearch.exception.DataStoreException;
+import me.amp.challenge.elasticsearch.model.IsElasticsearchIndexable;
+
+@ImplementedBy(ElasticsearchWriteController.class)
+public interface DataIndexer extends IsConnected {
+	/**
+	 * Creates the Elasticsearch index, with possibility of deleting previous index. If we
+	 * decide to not delete the previous index, and the index exists, the operation is
+	 * simply ignored.
+	 * 
+	 * @param indexName
+	 *            The index name
+	 * @param deleteOldIndexIfExists
+	 *            If true, delete index that matches the same name. If false, ignore
+	 *            operation.
+	 * @throws DataStoreException
+	 * @throws IOException
+	 */
+	void createIndex(String indexName, boolean deleteOldIndexIfExists) throws DataStoreException, IOException;
+
+	void indexDocument(IsElasticsearchIndexable o) throws DataStoreException;
+
+	void indexDocument(String index, String type, IsElasticsearchIndexable indexableObject) throws DataStoreException;
+
+	void deleteIndex(String indexName) throws DataStoreException;
+
+	void refresh(String... indices);
+}

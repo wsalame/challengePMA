@@ -12,6 +12,7 @@ public class GuiceInjector {
 	}
 
 	public static GuiceInjector getInstance() {
+		//Double-checked locking pattern
 		if (instance == null) {
 			synchronized (GuiceInjector.class) {
 				if (instance == null) {

@@ -14,12 +14,8 @@ public final class PropertyConstant {
 	// Dispatcher service
 	public static String DISPATCHER_HOST = "dispatcher.host";
 	public static String DISPATCHER_PORT = "dispatcher.port";
-	public static String DISPATCHER_LATITUDE = "dispatcher.latitude";
-	public static String DISPATCHER_LONGITUDE = "dispatcher.longitude";
 	
 	// Party manager service
 	public static String PARTY_MANAGER_HOST = "partyManager.host";
 	public static String PARTY_MANAGER_PORT = "partyManager.port";
-	public static String PARTY_MANAGER_LATITUDE = "dispatcher.latitude";
-	public static String PARTY_MANAGER_LONGITUDE = "dispatcher.longitude";
 }

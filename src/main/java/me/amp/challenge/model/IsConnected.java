@@ -22,5 +22,5 @@ public interface IsConnected {
 	 * @throws IOException
 	 * @throws TimeoutException
 	 */
-	void start() throws IOException, TimeoutException;
+	void start() throws Exception;
 }

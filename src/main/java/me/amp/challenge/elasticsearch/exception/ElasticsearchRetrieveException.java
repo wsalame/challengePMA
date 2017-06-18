@@ -1,0 +1,17 @@
+package me.amp.challenge.elasticsearch.exception;
+
+public class ElasticsearchRetrieveException extends DataStoreException {
+	private static final long serialVersionUID = 3438888609545661068L;
+
+	public ElasticsearchRetrieveException(Exception e) {
+		super(e);
+	}
+
+	public ElasticsearchRetrieveException(String message) {
+		super(message);
+	}
+
+	public ElasticsearchRetrieveException(String message, Exception e) {
+		super(message, e);
+	}
+}
