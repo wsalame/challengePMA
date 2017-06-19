@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import me.amp.challenge.elasticsearch.model.IsElasticsearchField;
 import me.amp.challenge.elasticsearch.model.IsElasticsearchIndexable;
-import me.amp.challenge.model.fields.PartyManagerField;
+import me.amp.challenge.model.fields.ManagerField;
 
-public class PartyManager implements IsElasticsearchIndexable {
+public class Manager implements IsElasticsearchIndexable {
 	public static String INDEX_NAME = "managers";
 	public static String TYPE_NAME = "managers";
 
@@ -16,7 +16,7 @@ public class PartyManager implements IsElasticsearchIndexable {
 	private final double longitude;
 	private final double latitude;
 
-	public PartyManager(String hostname, double longitude, double latitude) {
+	public Manager(String hostname, double longitude, double latitude) {
 		this.hostname = hostname;
 		this.longitude = longitude;
 		this.latitude = latitude;
@@ -36,8 +36,8 @@ public class PartyManager implements IsElasticsearchIndexable {
 
 	@Override
 	public Map<String, Object> buildDocument() {
-		Map<String, Object> document = Arrays.asList(PartyManagerField.values()).stream()
-		        .collect(Collectors.toMap(PartyManagerField::getJsonFieldName, f -> f.getIndexingValue(this)));
+		Map<String, Object> document = Arrays.asList(ManagerField.values()).stream()
+		        .collect(Collectors.toMap(ManagerField::getJsonFieldName, f -> f.getIndexingValue(this)));
 
 		return document;
 	}
@@ -64,6 +64,6 @@ public class PartyManager implements IsElasticsearchIndexable {
 
 	@Override
 	public IsElasticsearchField<? extends IsElasticsearchIndexable>[] getFields() {
-		return PartyManagerField.values();
+		return ManagerField.values();
 	}
 }

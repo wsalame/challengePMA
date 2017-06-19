@@ -34,11 +34,13 @@ public class ElasticsearchWriteController extends AbstractElasticsearchWriteCont
 	 */
 	@Override
 	public void deleteIndex(String indexName) throws DataStoreException {
-		DeleteIndexResponse deleteIndexResponse = getClient().admin().indices().prepareDelete(indexName).execute()
-		        .actionGet();
-		if (!deleteIndexResponse.isAcknowledged()) {
-			logger.error("Could not delete index");
-			throw new DataStoreException("Could not delete index");
+		if(isExists(indexName)){
+			DeleteIndexResponse deleteIndexResponse = getClient().admin().indices().prepareDelete(indexName).execute()
+			        .actionGet();
+			if (!deleteIndexResponse.isAcknowledged()) {
+				logger.error("Could not delete index");
+				throw new DataStoreException("Could not delete index");
+			}
 		}
 	}
 
@@ -111,11 +113,12 @@ public class ElasticsearchWriteController extends AbstractElasticsearchWriteCont
 			// Sending the document asynchronously
 			IndexRequestBuilder requestBuilder = getClient().prepareIndex(index, type).setId(indexableObject.getId())
 			        .setSource(documentAsJson);
+			
 			requestBuilder.execute();
 		} catch (Exception e) {
 			System.out.println("ERROR");
-			logger.error("Could not insert game in " + index + "/" + "type");
-			throw new DataStoreException("Could not insert game in " + index + "/" + "type");
+			logger.error("Could not insert document in " + index + "/" + type, e);
+			throw new DataStoreException("Could not insert document in " + index + "/" + type);
 		}
 	}
 
@@ -124,4 +127,7 @@ public class ElasticsearchWriteController extends AbstractElasticsearchWriteCont
 
 		getClient().admin().indices().preparePutMapping(index).setType(type).setSource(mapping).execute().actionGet();
 	}
+	
+	
+	
 }

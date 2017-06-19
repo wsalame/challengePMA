@@ -15,9 +15,8 @@ import com.google.inject.Singleton;
 import me.amp.challenge.elasticsearch.exception.DataStoreException;
 import me.amp.challenge.elasticsearch.model.IsElasticsearchIndexable;
 import me.amp.challenge.model.DataIndexer;
-import me.amp.challenge.model.DataRetriever;
 import me.amp.challenge.model.JsonFormatter;
-import me.amp.challenge.model.PartyManager;
+import me.amp.challenge.model.Manager;
 import me.amp.challenge.model.PartyManagerHealthMonitor;
 
 /**
@@ -34,18 +33,15 @@ public class PartyManagerHealthMonitorImpl implements PartyManagerHealthMonitor 
 
 	private JsonFormatter jsonFormatter;
 	private DataIndexer dataIndexer;
-	private DataRetriever dataRetriever;
 
 	@Inject
-	public PartyManagerHealthMonitorImpl(JsonFormatter jsonFormatter, DataIndexer dataIndexer,
-	        DataRetriever dataRetriever) {
-		this.dataRetriever = dataRetriever;
+	public PartyManagerHealthMonitorImpl(JsonFormatter jsonFormatter, DataIndexer dataIndexer) {
 		this.jsonFormatter = jsonFormatter;
 		this.dataIndexer = dataIndexer;
 	}
 
 	@Override
-	public List<PartyManager> getManagers() {
+	public List<Manager> getManagers() {
 		return null;
 	}
 
@@ -64,22 +60,22 @@ public class PartyManagerHealthMonitorImpl implements PartyManagerHealthMonitor 
 		URL url = Resources.getResource("managers.json");
 		String text = Resources.toString(url, Charsets.UTF_8);
 
-		List<PartyManager> managers = new ArrayList<>();
+		List<Manager> managers = new ArrayList<>();
 		Map<String, Object> managersMap = jsonFormatter.toMap(text);
-		
+
 		for (Entry<String, Object> entry : managersMap.entrySet()) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> coordinates = ((Map<String, Object>) entry.getValue());
 			String hostname = entry.getKey();
 
-			managers.add(new PartyManager(hostname, (double) coordinates.get("lon"), (double) coordinates.get("lat")));
+			managers.add(new Manager(hostname, (double) coordinates.get("lon"), (double) coordinates.get("lat")));
 		}
 
-		dataIndexer.createIndex(PartyManager.INDEX_NAME, true);
+		dataIndexer.createIndex(Manager.INDEX_NAME, true);
 
 		managers.forEach(manager -> uncheckedIndexDocument(manager));
-		
-		dataIndexer.refresh(PartyManager.INDEX_NAME);
+
+		dataIndexer.refresh(Manager.INDEX_NAME);
 	}
 
 	private void uncheckedIndexDocument(IsElasticsearchIndexable o) {

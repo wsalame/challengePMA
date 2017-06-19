@@ -20,6 +20,7 @@ import me.amp.challenge.model.DataIndexer;
 import me.amp.challenge.model.DataRetriever;
 import me.amp.challenge.model.DispatcherService;
 import me.amp.challenge.model.IsConnected;
+import me.amp.challenge.model.Party;
 import me.amp.challenge.model.PartyManagerHealthMonitor;
 import me.amp.challenge.model.PartyManagerService;
 
@@ -42,7 +43,6 @@ public class InitServices {
 	}
 
 	public void startServices() throws IOException, ExecutionException {
-
 		List<IsConnected> dependenciesServices = Lists.newArrayList(this.dataIndexer, this.dataRetriever);
 
 		List<IsConnected> failedServices = Collections.synchronizedList(new ArrayList<IsConnected>());
@@ -72,6 +72,8 @@ public class InitServices {
 				try {
 					this.partyManagerDispatcherHealthMonitor.start();
 					this.partyManagerDispatcherHealthMonitor.awaitInitialization();
+					dataIndexer.createIndex(Party.INDEX_NAME, true);
+
 				} catch (Exception e) {
 					logger.fatal(partyManagerDispatcherHealthMonitor.getClass().getSimpleName() + " could not be started", e);
 					failedServices.add(partyManagerDispatcherHealthMonitor);

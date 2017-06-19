@@ -1,6 +1,7 @@
 package me.amp.challenge.util;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +63,7 @@ public class DefaultJsonFormatter implements JsonFormatter {
 	@Override
 	public Map<String, Object> toMap(String json) throws JsonException {
 		try {
-			return defaultMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+			return defaultMapper.readValue(json, new TypeReference<LinkedHashMap<String, Object>>() {
 			});
 		} catch (IOException e) {
 			throw new JsonException(e.toString(), e);

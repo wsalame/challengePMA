@@ -1,21 +1,28 @@
 package me.amp.challenge.elasticsearch;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 
 import me.amp.challenge.elasticsearch.exception.DataStoreException;
 import me.amp.challenge.elasticsearch.exception.ElasticsearchRetrieveException;
+import me.amp.challenge.exception.JsonException;
+import me.amp.challenge.main.injector.GuiceInjector;
 import me.amp.challenge.model.DataRetriever;
+import me.amp.challenge.model.JsonFormatter;
 
 public abstract class AbstractElasticsearchReadController extends AbstractElasticsearchController
         implements DataRetriever {
 
+	private JsonFormatter jsonFormatter = GuiceInjector.get(JsonFormatter.class);
+
 	/**
 	 * Joins all the hits separated by the specified separator, into a String
 	 * 
-	 * @see {@link HasDataStatistics}
 	 * @param response
 	 *            response containing the hits to extract
 	 * @param separator
@@ -39,9 +46,37 @@ public abstract class AbstractElasticsearchReadController extends AbstractElasti
 		Arrays.asList(response.getHits().hits()).stream()
 		        .forEach(x -> sb.append(x.getSourceAsString()).append(separator));
 
-		if(response.getHits().hits().length > 0){
+		if (response.getHits().hits().length > 0) {
 			sb.delete(sb.length() - separator.length(), sb.length());
 		}
+
+		return sb.toString();
+	}
+
+	protected String joinSourceAndSortHits(SearchResponse response, String separator, int estimatedTotalCapacity) {
+		StringBuilder sb = new StringBuilder(estimatedTotalCapacity);
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		Arrays.asList(response.getHits().hits()).stream().forEach(x -> {
+			try {
+				Map<String, Object> map = jsonFormatter.toMap(x.getSourceAsString());
+				map.put("distance", x.getSortValues()[0]);
+				list.add(map);
+			} catch (JsonException e) {
+				e.printStackTrace();
+			}
+		});
+
+		try {
+			sb.append(jsonFormatter.toJson(list)).append(separator);
+		} catch (JsonException e) {
+			e.printStackTrace();
+		}
+
+		if (response.getHits().hits().length > 0) {
+			sb.delete(sb.length() - separator.length(), sb.length());
+		}
+
 		return sb.toString();
 	}
 

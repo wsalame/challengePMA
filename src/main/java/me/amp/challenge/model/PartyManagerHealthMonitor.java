@@ -8,5 +8,5 @@ import me.amp.challenge.main.service.PartyManagerHealthMonitorImpl;
 
 @ImplementedBy(PartyManagerHealthMonitorImpl.class)
 public interface PartyManagerHealthMonitor extends IsConnected {
-	List<PartyManager> getManagers();
+	List<Manager> getManagers();
 }

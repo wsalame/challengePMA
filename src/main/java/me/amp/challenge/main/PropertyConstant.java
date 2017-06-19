@@ -9,7 +9,6 @@ public final class PropertyConstant {
 	public static String ES_TRANSPORT_PORT = "es.transport.port";
 	public static String ES_NUMBER_SHARDS = "es.numberOfShards";
 	public static String ES_NUMBER_REPLICAS = "es.numberOfReplicas";
-	public static String ES_MAX_WINDOW_SIZE = "es.windowSize";
 	
 	// Dispatcher service
 	public static String DISPATCHER_HOST = "dispatcher.host";
